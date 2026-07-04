@@ -132,6 +132,7 @@ pip install sxtwl lunar_python
 - `raw/getgeju3.json`：格局接口原始响应
 - `chart.json`：结构化专业细盘
 - `chart.md`：后续分析使用的完整排盘底稿
+- `liuyue-YYYY/`：仅当后续问题精确到月份时生成，来源为问真前端流月逻辑，不属于基础排盘必跑项
 
 本地脚本会生成：
 
@@ -144,6 +145,14 @@ pip install sxtwl lunar_python
 本地结果只作为候选和交叉校验线索。
 
 后续所有格局、命局、大运、流年和现实用途分析，都必须先读取 `chart.md` 和必要的 `raw/` 原始响应；不能绕过文件直接凭页面印象分析。
+
+若后续问题精确到月份，还必须保留并读取 `chart.json`，因为问真流月脚本会从中读取八字、性别、日干、vip 和 userguid：
+
+```bash
+node scripts/pcbz_liuyue_fetch.mjs --year YYYY --chart-json path/to/chart.json --gregorian-month YYYY-MM --output path/to/chart-dir/liuyue-YYYY
+```
+
+该脚本生成的 `liuyue.md` 才是月份级节气切分底稿。问真没有直接返回 12 个流月干支的后端接口；流月干支来自问真前端 source map 中的 `getYueGan`、`ly_zhi`、`_JieQiData`，神煞来自 `getliunianshensha5.php`。
 
 `chart.md` 不是越长越好，必须把模型后续分析真正依赖的主证前置到“后续分析必读”：
 
@@ -234,6 +243,30 @@ pip install sxtwl lunar_python
 3. 看哪一盘解释力更强
 
 ## SOP
+
+### Step 0：先查既有档案
+
+若用户说的是“我女朋友”“我爸”“某某”这类关系称呼或已知人物，先检索当前工作区或用户明确提供资料中的既有底稿和笔记，不要直接要求用户重新给出生信息。
+
+优先查本技能包工作目录：
+
+```bash
+rg -n "当事人姓名|女朋友|girlfriend|出生|生日|八字|四柱|chart\\.md|chart\\.json" work
+find work -path '*chart.json' -o -path '*chart.md'
+```
+
+若当前环境可访问用户提供的笔记库或资料目录，再查对应人物目录和基本信息：
+
+```bash
+rg -n "当事人姓名|女朋友|出生|生日|八字|四柱|问真|chart\\.md" notes docs
+```
+
+判断规则：
+
+- 已有问真 `chart.json/chart.md`，且姓名、出生日期或关系链能对应上：直接采用该底稿进入后续模块。
+- 有北京时间盘和真太阳时盘：列出两份文件及差异；若本次问题不依赖时柱差异，可说明共同主线后继续；若依赖时柱，转 `/bazi-liunian` 验盘。
+- 只有笔记记录出生信息但没有底稿：按记录信息跑问真排盘。
+- 多个候选都可能是同一人：先列候选，不混盘断。
 
 ### Step 1：归一化输入并重述原始信息
 
@@ -507,6 +540,26 @@ python3 scripts/zi_hour_triage.py --date 2000-05-01 --time 23:15 --sex female --
 
 > 正式分析我先采用：X 年 X 月 X 日 X 时。
 > 但我保留 A 盘和 B 盘作为候选，并建议用学历、家庭、恋爱经历做反校验。
+
+## 导航协议
+
+每次输出末尾必须补充以下四段，供 `/bazi` 主入口做任务后导航：
+
+```markdown
+## 核心结论
+说明最终采用哪一盘、排盘底稿位置，以及是否仍保留候选盘。
+
+## 当前卡点
+说明当前是“盘已定，可以进入结构分析”，还是“候选盘未决，需要验盘”。
+
+## 下一步线索
+- 如果盘已定，回到 `/bazi` 后建议转 `/bazi-geju` 或 `/bazi-mingju`。
+- 如果候选盘未决，回到 `/bazi` 后建议转 `/bazi-liunian`。
+- 如果用户已经明确问事业、亲密、家庭、人际或健康，回到 `/bazi` 后按该主题分流，但仍要说明底稿是否可靠。
+
+## 不知道下一步用哪个 bazi 子技能？
+输入 `/bazi`。它会根据刚才的结论推荐 2-3 个下一步。
+```
 
 ## 错误清单
 
