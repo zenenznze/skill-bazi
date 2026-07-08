@@ -1,5 +1,6 @@
 work/
 tests/
+temp/
 *.local
 *.log
 .DS_Store

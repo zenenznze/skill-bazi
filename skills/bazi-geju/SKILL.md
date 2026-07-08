@@ -55,6 +55,7 @@ description: "八字格局取法模块。用于按月令、天透地藏、四见
 配合本技能包既有正统子平框架：
 
 - `references/complex-case-method-notes.md`
+- `references/liupai-multi-perspective.md`
 - `references/classics-originals/raw/渊海子平.txt`
 - `references/classics-originals/raw/三命通会.txt`
 - `references/classics-originals/raw/滴天髓.txt`
@@ -72,6 +73,8 @@ description: "八字格局取法模块。用于按月令、天透地藏、四见
 1. 月令优先。
 2. 本气优先。
 3. 有标准天透地藏时，优先于杂凑取格；三合三会当令成势时，必须单独复核。
+
+常格与变格要分清：月令、天透地藏、顺逆用、成败救应能解释主轴时，先按格局派常格处理；若遇强三会三合、专旺、从化、合绊、冲库、清浊真假导致气势改道，再引入《滴天髓》式变格和气势视角复核。不能为了追求特殊格名而跳过月令、根气、透干和岁运验证。
 
 ## 取格流程
 
